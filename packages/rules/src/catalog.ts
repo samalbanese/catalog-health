@@ -157,6 +157,15 @@ export function buildCatalog(rows: Row[]): Catalog {
 
   const families = new Map<string, Family>();
   const familyOf = new Map<number, string>();
+  // Keys made up here ("orphan:A", "row:12") must never land on a real SKU or an existing
+  // family, or rows would be merged into the wrong group and lose their findings.
+  const fresh = (base: string): string => {
+    let key = base;
+    for (let n = 2; families.has(key) || bySku.has(key); n++) key = `${base}#${n}`;
+    return key;
+  };
+  // Orphan groups by what their rows point at (a parent_sku, or a blank-parent row's own label).
+  const orphanGroups = new Map<string, Family>();
   // Children whose parent is valid are attached after the pass, so a child
   // listed above its parent still lands in the right family.
   const attach: { row: Row; key: string }[] = [];
@@ -178,20 +187,22 @@ export function buildCatalog(rows: Row[]): Catalog {
         attach.push({ row, key: p });
         continue;
       }
-      let key = p !== "" ? p : `orphan:${skuLabel(row)}`;
-      const taken = families.get(key);
-      if (taken !== undefined && taken.kind !== "orphans") key = `orphan:${key}`;
-      let family = families.get(key);
+      const pointsAt = p !== "" ? `parent:${p}` : `blank:${skuLabel(row)}`;
+      let family = orphanGroups.get(pointsAt);
       if (family === undefined) {
+        // A missing parent's SKU names its orphans' group; anything else gets a made-up key.
+        const key =
+          p !== "" && !families.has(p) && target === undefined ? p : fresh(`orphan:${p || skuLabel(row)}`);
         family = { key, kind: "orphans", parent: null, children: [] };
         families.set(key, family);
+        orphanGroups.set(pointsAt, family);
       }
       family.children.push(row);
-      familyOf.set(row.rowNumber, key);
+      familyOf.set(row.rowNumber, family.key);
       continue;
     }
 
-    const key = sku !== "" && !families.has(sku) ? sku : `row:${row.rowNumber}`;
+    const key = sku !== "" && !families.has(sku) ? sku : fresh(`row:${row.rowNumber}`);
     families.set(key, { key, kind: "standalone", parent: null, children: [row] });
     familyOf.set(row.rowNumber, key);
   }

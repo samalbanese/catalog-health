@@ -14,7 +14,7 @@ Your file is read in your browser tab and never uploaded.
 ## What it does
 
 - **Reads real files.** CSV, TSV, and XLSX, including category templates that put a template row and a label row above the field names, headers written like `item_name[marketplace_id=...]#1.value`, workbooks with instruction tabs, and CSVs saved by Excel in the older Windows-1252 encoding. When column names aren't clear, it asks you to match them.
-- **Scores the catalog.** A score out of 100, problem counts by severity, and a strip with one mark per row of the file, so you can see whether problems cluster in one part of it.
+- **Scores the catalog.** A score out of 100, problem counts by severity, and a strip that runs from the first row of the file to the last, so you can see whether problems cluster in one part of it.
 - **Groups problems by family.** Open a family to see the parent and its children side by side, with the problem cells marked and a plain sentence for each problem and its fix.
 - **Exports a fix list.** A CSV with `sku, row, severity, field, problem, suggested_fix`, filtered to what you're looking at, safe to open in Excel.
 - **Lets you change the rules.** Required attributes by product type, banned phrases, and length limits live in an editable rule set.
@@ -50,7 +50,7 @@ The built-in rules are an example modeled on common marketplace requirements, no
 ### Engineering decisions
 
 - **A rules package with no framework in it.** `packages/rules` takes rows and returns a report. It never touches the page, React, or a file parser, so the same checks run in the browser's Web Worker, in Node scripts, and in tests.
-- **Parsing and checking off the main thread.** The file is read, mapped, and checked in a Web Worker, so a large file never freezes the page.
+- **Parsing and checking off the main thread.** The file is read, mapped, and checked in a Web Worker, so the page stays responsive while a large file is read and checked. Big families open 100 rows at a time.
 - **Families first.** Rows are grouped into variation families before any check runs. Blank and repeated SKUs get their own place in that structure instead of being dropped, so they're reported rather than silently lost.
 - **One message per problem.** When a child is missing the size its theme needs, that's reported as a variation problem, not again as a missing required field. A parent with no theme is reported once on the parent, not on every child.
 - **An answer key, not a hope.** The sample generator plants each kind of problem, writes down where, and the test fails if the checker finds anything more or less.
@@ -69,7 +69,7 @@ The browser test suite fails if this takes 3 seconds or more. `npm run bench` ti
 
 ## Run locally
 
-Node 22 or newer.
+Node 22.12 or newer.
 
 ```bash
 npm install

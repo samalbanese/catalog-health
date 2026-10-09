@@ -35,13 +35,29 @@ function normalizeId(id: string): string {
   return start === 0 ? compact : compact.slice(start);
 }
 
-function otherSkus(rows: Row[], self: Row): string[] {
-  const out: string[] = [];
-  for (const r of rows) {
-    const sku = get(r, "item_sku");
-    if (r !== self && sku !== "" && !out.includes(sku)) out.push(sku);
+/** How many other rows or families a duplicate message names before it says "and N more". */
+const MAX_NAMED = 5;
+
+/**
+ * The first MAX_NAMED items of `group` other than `self` (which must be in the group), and how
+ * many more there are. Each call reads at most MAX_NAMED + 1 items, so a barcode shared by
+ * thousands of rows stays linear instead of listing every row in every message.
+ */
+function othersOf<T>(group: T[], self: T): { shown: T[]; more: number } {
+  const shown: T[] = [];
+  for (const item of group) {
+    if (shown.length === MAX_NAMED) break;
+    if (item !== self) shown.push(item);
   }
-  return out;
+  return { shown, more: group.length - 1 - shown.length };
+}
+
+function listNames(names: string[], more: number): string {
+  return more > 0 ? `${names.join(", ")}, and ${more.toLocaleString("en-US")} more` : names.join(", ");
+}
+
+function skusOf(rows: Row[]): string[] {
+  return [...new Set(rows.map((r) => get(r, "item_sku")).filter((s) => s !== ""))];
 }
 
 const TOKEN = /[a-z0-9]+/g;
@@ -126,8 +142,11 @@ export const checkDuplicates: Check = (catalog) => {
   }
   for (const [, group] of byId.repeated()) {
     for (const row of group) {
-      const others = group.filter((r) => r !== row);
-      const names = others.map((r) => `${who(r)} (row ${r.rowNumber})`).join(", ");
+      const { shown, more } = othersOf(group, row);
+      const names = listNames(
+        shown.map((r) => `${who(r)} (row ${r.rowNumber})`),
+        more,
+      );
       issues.push(
         makeIssue(
           catalog,
@@ -136,7 +155,7 @@ export const checkDuplicates: Check = (catalog) => {
           "external_product_id",
           `${capitalize(who(row))} has the barcode ${get(row, "external_product_id")}, which is also used by ${names}.`,
           "Give each product its own barcode, or remove the repeated row.",
-          otherSkus(group, row),
+          skusOf(shown),
         ),
       );
     }
@@ -162,17 +181,21 @@ export const checkDuplicates: Check = (catalog) => {
       const id = `duplicate-style:${head.rowNumber}:style_number`;
       if (styleSeen.has(id)) continue;
       styleSeen.add(id);
-      const heads = families.map(headRow).filter((r): r is Row => r !== null && r !== head);
-      const names = heads.map((r) => skuLabel(r)).join(", ");
+      const { shown, more } = othersOf(families, family);
+      const heads = shown.map(headRow).filter((r): r is Row => r !== null);
+      const names = listNames(
+        heads.map((r) => skuLabel(r)),
+        more,
+      );
       issues.push(
         makeIssue(
           catalog,
           head,
           "duplicate-style",
           "style_number",
-          `Style number ${style.toUpperCase()} is also used by ${heads.length === 1 ? "another family" : "other families"}: ${names}.`,
+          `Style number ${style.toUpperCase()} is also used by ${families.length === 2 ? "another family" : "other families"}: ${names}.`,
           "Give each family its own style_number, or put them under one parent if they are the same style.",
-          heads.map((r) => get(r, "item_sku")).filter((s) => s !== ""),
+          skusOf(heads),
         ),
       );
     }
@@ -197,16 +220,19 @@ export const checkDuplicates: Check = (catalog) => {
     if (firsts.size < 2) continue;
     const heads = [...firsts.values()];
     for (const row of heads) {
-      const others = heads.filter((r) => r !== row);
+      const { shown, more } = othersOf(heads, row);
       issues.push(
         makeIssue(
           catalog,
           row,
           "near-duplicate-title",
           "item_name",
-          `${capitalize(who(row))} has nearly the same title as ${others.map((r) => `${who(r)} ("${get(r, "item_name")}")`).join(", ")}.`,
+          `${capitalize(who(row))} has nearly the same title as ${listNames(
+            shown.map((r) => `${who(r)} ("${get(r, "item_name")}")`),
+            more,
+          )}.`,
           "Make the titles clearly different, or combine these into one family if they are the same product.",
-          others.map((r) => get(r, "item_sku")).filter((s) => s !== ""),
+          skusOf(shown),
         ),
       );
     }

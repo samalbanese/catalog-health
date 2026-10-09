@@ -35,6 +35,11 @@ export function App() {
   const [result, setResult] = useState<Result | null>(null);
   const [filters, setFilters] = useState<FilterState>(ALL_FILTERS);
   const heading = useRef<HTMLDivElement>(null);
+  // Each load, check, and reset takes a new number; a reply that arrives after a newer request
+  // started is dropped, so starting over never brings back an old result.
+  const request = useRef(0);
+  // The rules a check should use, read when it starts rather than when the file was chosen.
+  const rulesNow = useRef(rules);
 
   useEffect(() => () => checker.current?.dispose(), []);
 
@@ -44,39 +49,51 @@ export function App() {
   }
 
   async function openFile(file: File) {
+    const id = ++request.current;
+    setResult(null);
     setPhase({ kind: "working", message: `Reading ${file.name}` });
     try {
       const loaded = await getChecker().load(file);
+      if (id !== request.current) return;
       if (loaded.rowCount === 0) throw new Error("This file has no product rows under its header row.");
-      if (loaded.detection.confident)
-        await runCheck(file.name, loaded.detection.mapping, rules, loaded.parseMs);
+      if (loaded.detection.confident) await runCheck(file.name, loaded.detection.mapping, loaded.parseMs);
       else setPhase({ kind: "mapping", loaded, fileName: file.name });
     } catch (e) {
-      setPhase({ kind: "error", message: (e as Error).message });
+      if (id === request.current) setPhase({ kind: "error", message: (e as Error).message });
     }
   }
 
-  async function runCheck(fileName: string, mapping: Mapping, ruleSet: RuleSet, parseMs: number) {
+  async function runCheck(fileName: string, mapping: Mapping, parseMs: number) {
+    const id = ++request.current;
     setPhase({ kind: "working", message: `Checking ${fileName}` });
     try {
-      const checked = await getChecker().check(mapping, ruleSet);
+      const used = rulesNow.current;
+      const checked = await getChecker().check(mapping, used);
+      if (id !== request.current) return;
+      // Rules applied while this check ran: check again so the report matches the editor.
+      if (used !== rulesNow.current) return runCheck(fileName, mapping, parseMs);
       setResult({ fileName, mapping, checked, parseMs });
       setFilters(ALL_FILTERS);
       setPhase({ kind: "results" });
       requestAnimationFrame(() => heading.current?.querySelector("h1")?.focus());
     } catch (e) {
-      setPhase({ kind: "error", message: (e as Error).message });
+      if (id === request.current) setPhase({ kind: "error", message: (e as Error).message });
     }
   }
 
   function applyRules(next: RuleSet) {
+    rulesNow.current = next;
     setRules(next);
-    if (result) void runCheck(result.fileName, result.mapping, next, result.parseMs);
+    // A file still loading has no result yet; its check reads the new rules when it starts.
+    if (result) void runCheck(result.fileName, result.mapping, result.parseMs);
   }
 
   function reset() {
+    request.current++;
     setResult(null);
     setPhase({ kind: "idle" });
+    // The control that started over is gone; put focus on the start screen's heading.
+    requestAnimationFrame(() => document.getElementById("intro-title")?.focus());
   }
 
   const filtered: Issue[] = useMemo(
@@ -92,7 +109,11 @@ export function App() {
   const groups: FamilyGroup[] = useMemo(() => {
     if (!result) return [];
     const byFamily = new Map<string, Issue[]>();
-    for (const i of filtered) byFamily.set(i.family, [...(byFamily.get(i.family) ?? []), i]);
+    for (const i of filtered) {
+      const list = byFamily.get(i.family);
+      if (list === undefined) byFamily.set(i.family, [i]);
+      else list.push(i);
+    }
     const out: FamilyGroup[] = [];
     result.checked.report.families.forEach((family) => {
       const issues = byFamily.get(family.key);
@@ -147,7 +168,7 @@ export function App() {
           <MappingStep
             loaded={phase.loaded}
             fileName={phase.fileName}
-            onRun={(mapping) => runCheck(phase.fileName, mapping, rules, phase.loaded.parseMs)}
+            onRun={(mapping) => runCheck(phase.fileName, mapping, phase.loaded.parseMs)}
             onCancel={reset}
           />
         )}

@@ -22,7 +22,7 @@ export function Intro({ busy, onFile, onSample }: Props) {
     <section className="intro" aria-labelledby="intro-title">
       <div className="intro-copy">
         <p className="dateline mono">Free · open source · runs in your browser</p>
-        <h1 id="intro-title">
+        <h1 id="intro-title" tabIndex={-1}>
           Find what's broken in a product catalog <em>before a marketplace does.</em>
         </h1>
         <p className="lede">

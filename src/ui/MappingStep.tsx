@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FIELDS, type FieldKey } from "@relaywright/catalog-rules";
 import type { Mapping } from "../parse/headers";
 import type { Loaded } from "./types";
@@ -16,6 +16,9 @@ const KEY_FIELDS: FieldKey[] = ["item_sku", "parent_sku", "parent_child", "varia
 export function MappingStep({ loaded, fileName, onRun, onCancel }: Props) {
   const [mapping, setMapping] = useState<Mapping>(loaded.detection.mapping);
   const ambiguous = new Set(loaded.detection.ambiguous);
+  const heading = useRef<HTMLHeadingElement>(null);
+  // This screen replaces the control that opened the file, so focus moves to its heading.
+  useEffect(() => heading.current?.focus(), []);
   const ordered = [...KEY_FIELDS, ...FIELDS.filter((f) => !KEY_FIELDS.includes(f))];
 
   function sampleValue(col: number | null): string {
@@ -27,10 +30,13 @@ export function MappingStep({ loaded, fileName, onRun, onCancel }: Props) {
   return (
     <section className="mapping" aria-labelledby="mapping-title">
       <p className="dateline mono">{fileName}</p>
-      <h1 id="mapping-title">Match your columns</h1>
+      <h1 id="mapping-title" ref={heading} tabIndex={-1}>
+        Match your columns
+      </h1>
       <p className="lede">
         Some column names weren't clear enough to match on their own. Check each match below, then run the
-        check. Only the SKU is required; anything left unmatched is skipped by the checks that need it.
+        check. Only the SKU column is required. A field left unmatched counts as blank, so where the rules
+        need it, each row is reported as missing it.
       </p>
 
       <form

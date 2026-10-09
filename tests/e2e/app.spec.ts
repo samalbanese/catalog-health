@@ -31,7 +31,7 @@ test("the sample catalog surfaces every planted problem", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: new RegExp(`^${total} problems`) })).toBeVisible();
   await expectCounts(page);
   await expect(page.getByLabel(/Catalog health \d+ out of 100/)).toBeVisible();
-  await expect(page.getByRole("img", { name: /Every row of the file in order/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /The file from first row to last/ })).toBeVisible();
 });
 
 test("uploading the sample as CSV gives the same result", async ({ page }) => {

@@ -79,6 +79,8 @@ export function Summary({ report, fileName, checkMs, onExport, exportCount, onRe
 }
 
 const MAX_BINS = 240;
+/** Tick height by severity, so the strip reads without color: tallest is most serious. */
+const TICK_HEIGHT: Record<Severity | "clean", number> = { blocking: 1, warning: 0.78, tidy: 0.6, clean: 0.4 };
 
 function CatalogStrip({ report }: { report: Report }) {
   if (report.rowCount === 0) return null;
@@ -104,7 +106,7 @@ function CatalogStrip({ report }: { report: Report }) {
     cells.push(cell);
   }
   const label =
-    `Every row of the file in order, marked by its most serious problem: ` +
+    `The file from first row to last, each mark showing the most serious problem in its rows: ` +
     `${report.rowsAffected.blocking} rows with blocking problems, ${report.rowsAffected.warning} with warnings, ` +
     `${report.rowsAffected.tidy} with tidy-ups, and ${report.rowCount - report.rowsAffected.blocking - report.rowsAffected.warning - report.rowsAffected.tidy} clean.`;
 
@@ -115,9 +117,9 @@ function CatalogStrip({ report }: { report: Report }) {
           <rect
             key={i}
             x={i + 0.12}
-            y={c === "clean" ? 0.55 : 0}
+            y={1 - TICK_HEIGHT[c]}
             width={0.76}
-            height={c === "clean" ? 0.45 : 1}
+            height={TICK_HEIGHT[c]}
             className={`tick tick-${c}`}
           />
         ))}
@@ -129,7 +131,8 @@ function CatalogStrip({ report }: { report: Report }) {
         </span>
         <span className="strip-key" aria-hidden="true">
           <i className="key key-blocking" /> blocking <i className="key key-warning" /> warning{" "}
-          <i className="key key-tidy" /> tidy-up <i className="key key-clean" /> clean
+          <i className="key key-tidy" /> tidy-up <i className="key key-clean" /> clean · taller is more
+          serious
         </span>
         <span>Row {rowNumbers[rowNumbers.length - 1]}</span>
       </figcaption>

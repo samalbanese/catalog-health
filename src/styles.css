@@ -339,7 +339,10 @@ select {
   font-size: clamp(34px, 4.4vw, 60px);
   max-width: 24ch;
 }
-.summary-head h1:focus {
+/* Headings take focus from script after a screen change; a focus ring there reads as a bug. */
+.summary-head h1:focus,
+#intro-title:focus,
+#mapping-title:focus {
   outline: none;
 }
 .spec {
@@ -466,23 +469,27 @@ select {
   color: var(--muted);
   margin-top: 8px;
 }
+/* Key swatches match the strip's tick heights, so the key reads without color too. */
 .key {
   display: inline-block;
-  width: 9px;
-  height: 9px;
-  margin: 0 3px 0 10px;
-  vertical-align: -1px;
+  width: 6px;
+  margin: 0 4px 0 10px;
+  vertical-align: baseline;
 }
 .key-blocking {
+  height: 12px;
   background: var(--signal);
 }
 .key-warning {
+  height: 9px;
   background: var(--warn);
 }
 .key-tidy {
+  height: 7px;
   background: var(--muted);
 }
 .key-clean {
+  height: 5px;
   background: var(--line);
 }
 
@@ -666,6 +673,15 @@ legend {
 .fam-panel {
   padding: 4px 8px 24px 20px;
   animation: rise 260ms var(--ease) both;
+}
+.fam-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
 }
 .table-wrap {
   /* Positioned so the visually hidden labels inside cells stay inside this scroll box. */

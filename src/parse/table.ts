@@ -13,6 +13,10 @@ export class FileError extends Error {
 const UNSUPPORTED = "This file type isn't supported. Use CSV, TSV, or XLSX.";
 const UNREADABLE_SHEET = "This spreadsheet couldn't be read. Save it again as XLSX or CSV and try again.";
 const SHEET_SCAN_ROWS = 10;
+// About 130,000 rows of 300 columns. Past this, the browser tab could run out of memory.
+const MAX_SHEET_CELLS = 40_000_000;
+const SHEET_TOO_LARGE =
+  "This sheet is too large to check in the browser. Delete unused columns or rows, or save just the product tab as CSV, and try again.";
 
 export interface TableResult {
   table: string[][];
@@ -93,6 +97,15 @@ function parseDelimited(text: string, delimiter: string | undefined): string[][]
     delimitersToGuess: [",", "\t", ";", "|"],
     skipEmptyLines: false,
   });
+  // An unclosed quote makes the parser read every row after it as one long cell, which would
+  // silently drop those products. Stop and say where instead.
+  const unclosed = result.errors.find((e) => e.code === "MissingQuotes");
+  if (unclosed !== undefined) {
+    const where = typeof unclosed.row === "number" ? `row ${unclosed.row + 1}` : "one row";
+    throw new FileError(
+      `A quote mark in ${where} of this file is never closed, so the rows after it can't be read. Fix that cell, or save the file again from your spreadsheet app, and try again.`,
+    );
+  }
   return result.data.map((row) => row.map((c) => (c === undefined || c === null ? "" : String(c))));
 }
 
@@ -153,6 +166,27 @@ function pickSheet(wb: XLSX.WorkBook): string | undefined {
   return best ?? firstWithData ?? wb.SheetNames[0];
 }
 
+/**
+ * Sets a sheet's range from the cells it really has. A file can declare a range far larger than
+ * its data (A1:XFD1048576 is 17 billion cells), and reading that range would fill every gap.
+ */
+function trimToCells(ws: XLSX.WorkSheet): number {
+  let lastRow = -1;
+  let lastCol = -1;
+  for (const address of Object.keys(ws)) {
+    if (address.charCodeAt(0) === 33) continue; // "!ref", "!merges" and similar
+    const { r, c } = XLSX.utils.decode_cell(address);
+    if (r > lastRow) lastRow = r;
+    if (c > lastCol) lastCol = c;
+  }
+  if (lastRow < 0) {
+    delete ws["!ref"];
+    return 0;
+  }
+  ws["!ref"] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: lastRow, c: lastCol } });
+  return (lastRow + 1) * (lastCol + 1);
+}
+
 function readSpreadsheet(bytes: ArrayBuffer): TableResult {
   let wb: XLSX.WorkBook;
   try {
@@ -160,8 +194,10 @@ function readSpreadsheet(bytes: ArrayBuffer): TableResult {
   } catch {
     throw new FileError(UNREADABLE_SHEET);
   }
+  const cells = new Map(wb.SheetNames.map((name) => [name, trimToCells(wb.Sheets[name])]));
   const sheetName = pickSheet(wb);
   if (sheetName === undefined) return { table: [] };
+  if ((cells.get(sheetName) ?? 0) > MAX_SHEET_CELLS) throw new FileError(SHEET_TOO_LARGE);
   const ws = wb.Sheets[sheetName];
   spellOutLongIntegers(ws);
   return { table: dropTrailingBlankRows(sheetRows(ws)), sheetName };

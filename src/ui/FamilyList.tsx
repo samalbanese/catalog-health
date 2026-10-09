@@ -9,6 +9,8 @@ export interface FamilyGroup {
 }
 
 const PAGE = 40;
+/** Rows shown at once in an opened family, so a family of thousands of rows can't stall the page. */
+const PANEL_PAGE = 100;
 
 export function FamilyList({ groups }: { groups: FamilyGroup[] }) {
   const [shown, setShown] = useState(PAGE);
@@ -108,9 +110,15 @@ function role(row: Row, family: Family): string {
 }
 
 function FamilyPanel({ id, family, issues }: { id: string; family: Family; issues: Issue[] }) {
-  const rows = family.parent ? [family.parent, ...family.children] : family.children;
+  const [limit, setLimit] = useState(PANEL_PAGE);
+  const allRows = family.parent ? [family.parent, ...family.children] : family.children;
+  const rows = allRows.slice(0, limit);
   const byRow = new Map<number, Issue[]>();
-  for (const i of issues) byRow.set(i.rowNumber, [...(byRow.get(i.rowNumber) ?? []), i]);
+  for (const i of issues) {
+    const list = byRow.get(i.rowNumber);
+    if (list === undefined) byRow.set(i.rowNumber, [i]);
+    else list.push(i);
+  }
   const flagged = new Set(issues.map((i) => `${i.rowNumber}:${i.field}`));
   const rowsWithIssues = rows.filter((r) => byRow.has(r.rowNumber));
 
@@ -173,6 +181,18 @@ function FamilyPanel({ id, family, issues }: { id: string; family: Family; issue
             )),
         )}
       </ul>
+
+      {limit < allRows.length && (
+        <p className="fam-more">
+          <span className="mono">
+            Showing rows 1 to {limit.toLocaleString("en-US")} of {allRows.length.toLocaleString("en-US")}. The
+            fix list has every problem.
+          </span>{" "}
+          <button type="button" className="btn" onClick={() => setLimit(limit + PANEL_PAGE)}>
+            Show {Math.min(PANEL_PAGE, allRows.length - limit)} more rows
+          </button>
+        </p>
+      )}
     </div>
   );
 }
