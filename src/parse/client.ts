@@ -1,0 +1,81 @@
+import type { RuleSet } from "@relaywright/catalog-rules";
+import type { Mapping } from "./headers.ts";
+import type { FromWorker, ToWorker } from "./protocol.ts";
+
+export type Loaded = Extract<FromWorker, { type: "loaded" }>;
+export type Checked = Extract<FromWorker, { type: "report" }>;
+
+export interface Checker {
+  load(file: File): Promise<Loaded>;
+  check(mapping: Mapping, rules: RuleSet): Promise<Checked>;
+  dispose(): void;
+}
+
+const WORKER_FAILED = "The checker stopped unexpectedly. Reload the page and try again.";
+const DISPOSED = "The checker was closed. Reload the page and try again.";
+
+/**
+ * Starts the parsing worker. Requests run one at a time, in the order they were
+ * made, because the worker holds a single loaded file.
+ */
+export function createChecker(): Checker {
+  const worker = new Worker(new URL("./worker.ts", import.meta.url), { type: "module" });
+  let disposed = false;
+  let queue: Promise<unknown> = Promise.resolve();
+  let cancelCurrent: ((error: Error) => void) | null = null;
+
+  function send<T extends FromWorker["type"]>(
+    message: ToWorker,
+    expected: T,
+    transfer: Transferable[] = [],
+  ): Promise<Extract<FromWorker, { type: T }>> {
+    const run = () =>
+      new Promise<Extract<FromWorker, { type: T }>>((resolve, reject) => {
+        if (disposed) {
+          reject(new Error(DISPOSED));
+          return;
+        }
+        const finish = () => {
+          worker.removeEventListener("message", onMessage);
+          worker.removeEventListener("error", onError);
+          cancelCurrent = null;
+        };
+        const onMessage = (event: MessageEvent<FromWorker>) => {
+          finish();
+          const reply = event.data;
+          if (reply.type === "error") reject(new Error(reply.message));
+          else if (reply.type === expected) resolve(reply as Extract<FromWorker, { type: T }>);
+          else reject(new Error(WORKER_FAILED));
+        };
+        const onError = () => {
+          finish();
+          reject(new Error(WORKER_FAILED));
+        };
+        cancelCurrent = (error) => {
+          finish();
+          reject(error);
+        };
+        worker.addEventListener("message", onMessage);
+        worker.addEventListener("error", onError);
+        worker.postMessage(message, transfer);
+      });
+    const result = queue.then(run, run);
+    queue = result.catch(() => undefined);
+    return result;
+  }
+
+  return {
+    async load(file) {
+      const bytes = await file.arrayBuffer();
+      return send({ type: "load", name: file.name, bytes }, "loaded", [bytes]);
+    },
+    check(mapping, rules) {
+      return send({ type: "check", mapping, rules }, "report");
+    },
+    dispose() {
+      disposed = true;
+      cancelCurrent?.(new Error(DISPOSED));
+      worker.terminate();
+    },
+  };
+}
