@@ -1,0 +1,14 @@
+node_modules/
+dist/
+artifacts/
+test-results/
+playwright-report/
+samples/large/
+*.local
+.DS_Store
+.claude/
+
+# Local working notes (not part of the public repo)
+*.md
+!README.md
+docs/

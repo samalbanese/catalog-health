@@ -1,0 +1,5 @@
+package-lock.json
+dist/
+samples/*.csv
+samples/answer-key.json
+samples/large/
