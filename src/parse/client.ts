@@ -24,13 +24,17 @@ export function createChecker(): Checker {
   let queue: Promise<unknown> = Promise.resolve();
   let cancelCurrent: ((error: Error) => void) | null = null;
 
+  /**
+   * Queues one request. `prepare` runs when the request's turn comes, so work like reading a
+   * file's bytes can't finish out of order and let an older file replace a newer one.
+   */
   function send<T extends FromWorker["type"]>(
-    message: ToWorker,
+    prepare: () => Promise<{ message: ToWorker; transfer?: Transferable[] }>,
     expected: T,
-    transfer: Transferable[] = [],
   ): Promise<Extract<FromWorker, { type: T }>> {
-    const run = () =>
-      new Promise<Extract<FromWorker, { type: T }>>((resolve, reject) => {
+    const run = async () => {
+      const { message, transfer = [] } = await prepare();
+      return new Promise<Extract<FromWorker, { type: T }>>((resolve, reject) => {
         if (disposed) {
           reject(new Error(DISPOSED));
           return;
@@ -59,18 +63,21 @@ export function createChecker(): Checker {
         worker.addEventListener("error", onError);
         worker.postMessage(message, transfer);
       });
+    };
     const result = queue.then(run, run);
     queue = result.catch(() => undefined);
     return result;
   }
 
   return {
-    async load(file) {
-      const bytes = await file.arrayBuffer();
-      return send({ type: "load", name: file.name, bytes }, "loaded", [bytes]);
+    load(file) {
+      return send(async () => {
+        const bytes = await file.arrayBuffer();
+        return { message: { type: "load", name: file.name, bytes }, transfer: [bytes] };
+      }, "loaded");
     },
     check(mapping, rules) {
-      return send({ type: "check", mapping, rules }, "report");
+      return send(async () => ({ message: { type: "check", mapping, rules } }), "report");
     },
     dispose() {
       disposed = true;

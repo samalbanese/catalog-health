@@ -164,7 +164,7 @@ export function buildCatalog(rows: Row[]): Catalog {
     for (let n = 2; families.has(key) || bySku.has(key); n++) key = `${base}#${n}`;
     return key;
   };
-  // Orphan groups by what their rows point at (a parent_sku, or a blank-parent row's own label).
+  // Orphan groups by what their rows point at: a parent_sku, or for a blank one, the row itself.
   const orphanGroups = new Map<string, Family>();
   // Children whose parent is valid are attached after the pass, so a child
   // listed above its parent still lands in the right family.
@@ -187,7 +187,8 @@ export function buildCatalog(rows: Row[]): Catalog {
         attach.push({ row, key: p });
         continue;
       }
-      const pointsAt = p !== "" ? `parent:${p}` : `blank:${skuLabel(row)}`;
+      // Children with the same parent_sku share a group; a child with no parent_sku is its own.
+      const pointsAt = p !== "" ? `parent:${p}` : `row:${row.rowNumber}`;
       let family = orphanGroups.get(pointsAt);
       if (family === undefined) {
         // A missing parent's SKU names its orphans' group; anything else gets a made-up key.

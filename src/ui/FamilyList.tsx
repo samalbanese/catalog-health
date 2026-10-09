@@ -186,7 +186,7 @@ function FamilyPanel({ id, family, issues }: { id: string; family: Family; issue
         <p className="fam-more">
           <span className="mono">
             Showing rows 1 to {limit.toLocaleString("en-US")} of {allRows.length.toLocaleString("en-US")}. The
-            fix list has every problem.
+            fix list includes every problem that matches your filters, in rows shown here or not.
           </span>{" "}
           <button type="button" className="btn" onClick={() => setLimit(limit + PANEL_PAGE)}>
             Show {Math.min(PANEL_PAGE, allRows.length - limit)} more rows

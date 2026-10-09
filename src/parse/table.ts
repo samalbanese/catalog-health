@@ -176,6 +176,12 @@ function trimToCells(ws: XLSX.WorkSheet): number {
   for (const address of Object.keys(ws)) {
     if (address.charCodeAt(0) === 33) continue; // "!ref", "!merges" and similar
     const { r, c } = XLSX.utils.decode_cell(address);
+    // Excel's own limits are 1,048,576 rows and 16,384 columns (XFD). A cell past them can't
+    // come from Excel, and keeping it would make even a 10-row preview allocate millions of cells.
+    if (r > 1_048_575 || c > 16_383 || r < 0 || c < 0) {
+      delete ws[address];
+      continue;
+    }
     if (r > lastRow) lastRow = r;
     if (c > lastCol) lastCol = c;
   }
