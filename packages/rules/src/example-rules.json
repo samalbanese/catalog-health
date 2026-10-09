@@ -1,0 +1,47 @@
+{
+  "label": "Example rules modeled on common marketplace requirements. Edit them to match your category template.",
+  "productTypes": {
+    "DRESS": {
+      "required": [
+        "item_name",
+        "brand_name",
+        "size_name",
+        "color_name",
+        "department_name",
+        "material_type",
+        "external_product_id"
+      ]
+    },
+    "SHIRT": {
+      "required": [
+        "item_name",
+        "brand_name",
+        "size_name",
+        "color_name",
+        "department_name",
+        "material_type",
+        "external_product_id"
+      ]
+    },
+    "COAT": {
+      "required": [
+        "item_name",
+        "brand_name",
+        "size_name",
+        "color_name",
+        "department_name",
+        "material_type",
+        "external_product_id"
+      ]
+    }
+  },
+  "parentRequired": ["item_name", "brand_name", "feed_product_type", "variation_theme"],
+  "content": {
+    "titleMaxLength": 150,
+    "bannedPhrases": ["best seller", "free shipping", "sale", "limited time", "hot deal", "#1", "!"],
+    "minBullets": 3,
+    "maxBullets": 5,
+    "bulletMaxLength": 255,
+    "allCapsAllowed": ["USA", "UPF", "XXL", "XXXL"]
+  }
+}

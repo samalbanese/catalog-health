@@ -1,0 +1,332 @@
+[
+  {
+    "code": "theme-mismatch",
+    "sku": "WB-1019-BLK-M",
+    "field": "variation_theme"
+  },
+  {
+    "code": "theme-mismatch",
+    "sku": "WB-1028-NVY-S",
+    "field": "variation_theme"
+  },
+  {
+    "code": "theme-mismatch",
+    "sku": "WB-1033-RST-S",
+    "field": "variation_theme"
+  },
+  {
+    "code": "duplicate-variant",
+    "sku": "WB-1006-ROS-XL",
+    "field": ""
+  },
+  {
+    "code": "duplicate-variant",
+    "sku": "WB-1003-CHR-XL",
+    "field": ""
+  },
+  {
+    "code": "duplicate-variant",
+    "sku": "WB-1026-BLK-XL",
+    "field": ""
+  },
+  {
+    "code": "missing-theme-attribute",
+    "sku": "WB-1027-RST-S",
+    "field": "size_name"
+  },
+  {
+    "code": "missing-theme-attribute",
+    "sku": "WB-1020-CHR-S",
+    "field": "color_name"
+  },
+  {
+    "code": "missing-theme-attribute",
+    "sku": "WB-1024-SAG-S",
+    "field": "size_name"
+  },
+  {
+    "code": "missing-theme-attribute",
+    "sku": "WB-1018-CHR-S",
+    "field": "color_name"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1030",
+    "field": "item_name"
+  },
+  {
+    "code": "duplicate-style",
+    "sku": "WB-1015",
+    "field": "style_number"
+  },
+  {
+    "code": "duplicate-style",
+    "sku": "WB-1059-IVY-S",
+    "field": "style_number"
+  },
+  {
+    "code": "duplicate-style",
+    "sku": "WB-1043-ROS-L",
+    "field": "style_number"
+  },
+  {
+    "code": "duplicate-style",
+    "sku": "WB-1045-CHR-M",
+    "field": "style_number"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1004-IVY-M",
+    "field": "material_type"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1009-CBL-L",
+    "field": "department_name"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1007-ROS-S",
+    "field": "external_product_id"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1056-RST-L",
+    "field": "brand_name"
+  },
+  {
+    "code": "missing-required",
+    "sku": "WB-1046-BLK-M",
+    "field": "material_type"
+  },
+  {
+    "code": "unknown-product-type",
+    "sku": "WB-1057-CBL-XS",
+    "field": "feed_product_type"
+  },
+  {
+    "code": "unknown-product-type",
+    "sku": "WB-1051-BLK-L",
+    "field": "feed_product_type"
+  },
+  {
+    "code": "duplicate-external-id",
+    "sku": "WB-1047-NVY-S",
+    "field": "external_product_id"
+  },
+  {
+    "code": "duplicate-external-id",
+    "sku": "WB-1058-SAG-S",
+    "field": "external_product_id"
+  },
+  {
+    "code": "duplicate-external-id",
+    "sku": "WB-1031-SAG-XL",
+    "field": "external_product_id"
+  },
+  {
+    "code": "duplicate-external-id",
+    "sku": "WB-1001-NVY-XS",
+    "field": "external_product_id"
+  },
+  {
+    "code": "near-duplicate-title",
+    "sku": "WB-1050-IVY-M",
+    "field": "item_name"
+  },
+  {
+    "code": "near-duplicate-title",
+    "sku": "WB-1054-RST-S",
+    "field": "item_name"
+  },
+  {
+    "code": "near-duplicate-title",
+    "sku": "WB-1055-NVY-L",
+    "field": "item_name"
+  },
+  {
+    "code": "near-duplicate-title",
+    "sku": "WB-1049-CHR-S",
+    "field": "item_name"
+  },
+  {
+    "code": "title-too-long",
+    "sku": "WB-1036-NVY-L",
+    "field": "item_name"
+  },
+  {
+    "code": "title-too-long",
+    "sku": "WB-1009-CBL-S",
+    "field": "item_name"
+  },
+  {
+    "code": "title-too-long",
+    "sku": "WB-1041-ROS-XS",
+    "field": "item_name"
+  },
+  {
+    "code": "banned-phrase",
+    "sku": "WB-1023-BLK-S",
+    "field": "item_name"
+  },
+  {
+    "code": "banned-phrase",
+    "sku": "WB-1040-ROS-XL",
+    "field": "item_name"
+  },
+  {
+    "code": "banned-phrase",
+    "sku": "WB-1034-IVY-XL",
+    "field": "bullet_point2"
+  },
+  {
+    "code": "banned-phrase",
+    "sku": "WB-1021-ROS-M",
+    "field": "bullet_point4"
+  },
+  {
+    "code": "all-caps-word",
+    "sku": "WB-1035-ROS-M",
+    "field": "item_name"
+  },
+  {
+    "code": "all-caps-word",
+    "sku": "WB-1002-IVY-XS",
+    "field": "item_name"
+  },
+  {
+    "code": "all-caps-word",
+    "sku": "WB-1052-RST-L",
+    "field": "item_name"
+  },
+  {
+    "code": "title-brand-prefix",
+    "sku": "WB-1010-CHR-M",
+    "field": "item_name"
+  },
+  {
+    "code": "title-brand-prefix",
+    "sku": "WB-1038-CHR-L",
+    "field": "item_name"
+  },
+  {
+    "code": "title-brand-prefix",
+    "sku": "WB-1060-SAG-L",
+    "field": "item_name"
+  },
+  {
+    "code": "bullet-count",
+    "sku": "WB-1035-CHR-XL",
+    "field": ""
+  },
+  {
+    "code": "bullet-count",
+    "sku": "WB-1031-SAG-XS",
+    "field": ""
+  },
+  {
+    "code": "bullet-count",
+    "sku": "WB-1037-RST-M",
+    "field": ""
+  },
+  {
+    "code": "bullet-too-long",
+    "sku": "WB-1029-CBL-S",
+    "field": "bullet_point3"
+  },
+  {
+    "code": "bullet-too-long",
+    "sku": "WB-1017-CBL-L",
+    "field": "bullet_point5"
+  },
+  {
+    "code": "missing-sku",
+    "sku": "",
+    "field": "item_sku"
+  },
+  {
+    "code": "missing-image",
+    "sku": "WB-1004-IVY-S",
+    "field": "main_image_url"
+  },
+  {
+    "code": "missing-image",
+    "sku": "WB-1036-RST-M",
+    "field": "main_image_url"
+  },
+  {
+    "code": "missing-image",
+    "sku": "WB-1002-IVY-S",
+    "field": "main_image_url"
+  },
+  {
+    "code": "missing-image",
+    "sku": "WB-1001-RST-M",
+    "field": "main_image_url"
+  },
+  {
+    "code": "missing-price",
+    "sku": "WB-1007-ROS-XL",
+    "field": "standard_price"
+  },
+  {
+    "code": "missing-price",
+    "sku": "WB-1004-IVY-XL",
+    "field": "standard_price"
+  },
+  {
+    "code": "missing-price",
+    "sku": "WB-1025-CBL-L",
+    "field": "standard_price"
+  },
+  {
+    "code": "sale-above-list",
+    "sku": "WB-1040-ROS-S",
+    "field": "sale_price"
+  },
+  {
+    "code": "sale-above-list",
+    "sku": "WB-1011-IVY-L",
+    "field": "sale_price"
+  },
+  {
+    "code": "sale-above-list",
+    "sku": "WB-1021-CHR-S",
+    "field": "sale_price"
+  },
+  {
+    "code": "orphan-child",
+    "sku": "WB-1061-RST-M",
+    "field": "parent_sku"
+  },
+  {
+    "code": "orphan-child",
+    "sku": "WB-1062-CHR-L",
+    "field": "parent_sku"
+  },
+  {
+    "code": "orphan-child",
+    "sku": "WB-1063-ROS-S",
+    "field": "parent_sku"
+  },
+  {
+    "code": "childless-parent",
+    "sku": "WB-1064",
+    "field": ""
+  },
+  {
+    "code": "childless-parent",
+    "sku": "WB-1065",
+    "field": ""
+  },
+  {
+    "code": "duplicate-sku",
+    "sku": "WB-1042-ROS-XL",
+    "field": "item_sku"
+  },
+  {
+    "code": "duplicate-sku",
+    "sku": "WB-1044-SAG-XS",
+    "field": "item_sku"
+  }
+]
