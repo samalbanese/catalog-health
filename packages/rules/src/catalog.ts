@@ -158,10 +158,15 @@ export function buildCatalog(rows: Row[]): Catalog {
   const families = new Map<string, Family>();
   const familyOf = new Map<number, string>();
   // Keys made up here ("orphan:A", "row:12") must never land on a real SKU or an existing
-  // family, or rows would be merged into the wrong group and lose their findings.
+  // family, or rows would be merged into the wrong group and lose their findings. The next
+  // suffix is remembered per base, so 70,000 rows repeating one SKU (a spreadsheet fill-down
+  // mistake) don't rescan every earlier key.
+  const nextSuffix = new Map<string, number>();
   const fresh = (base: string): string => {
-    let key = base;
-    for (let n = 2; families.has(key) || bySku.has(key); n++) key = `${base}#${n}`;
+    let n = nextSuffix.get(base) ?? 1;
+    let key = n === 1 ? base : `${base}#${n}`;
+    while (families.has(key) || bySku.has(key)) key = `${base}#${++n}`;
+    nextSuffix.set(base, n + 1);
     return key;
   };
   // Orphan groups by what their rows point at: a parent_sku, or for a blank one, the row itself.
