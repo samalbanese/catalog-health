@@ -25,23 +25,23 @@ Try it with the **sample catalog**: an invented apparel brand, Westbrook & Co., 
 
 Every check is a plain rule, so the same file always gets the same result. No AI is involved.
 
-| Check | Severity | Fires when |
-| --- | --- | --- |
-| **Variation families** | blocking | A child has no parent, or points to a parent that isn't in the file or isn't marked as one |
-| | warning | A parent has no children |
-| | blocking | A child's theme varies on different attributes than its parent's |
-| | blocking | A child is missing the size or color its family's theme varies on |
-| | blocking | Two children in one family have the same size and color |
-| **Required attributes** | blocking | A field the rules require for that product type (or for parents) is blank |
-| | warning | The product type isn't in the rule set, so its fields can't be checked |
-| **Duplicates** | blocking | The same SKU on two rows |
-| | blocking | Two sellable rows share a barcode, ignoring spaces and leading zeros |
-| | warning | One style number used by two families |
-| | warning | Two families with the same brand, color, and title words once the size is removed |
-| **Titles and bullets** | warning | A title over the length limit, or a promotional phrase in a title or bullet |
-| | tidy-up | All-caps words, a title that doesn't start with the brand, too few or too many bullets, a bullet over the length limit |
-| **Basics** | blocking | No SKU, no main image, or a blank or zero price on a sellable row |
-| | warning | A sale price above the list price |
+| Check                   | Severity | Fires when                                                                                                             |
+| ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Variation families**  | blocking | A child has no parent, or points to a parent that isn't in the file or isn't marked as one                             |
+|                         | warning  | A parent has no children                                                                                               |
+|                         | blocking | A child's theme varies on different attributes than its parent's                                                       |
+|                         | blocking | A child is missing the size or color its family's theme varies on                                                      |
+|                         | blocking | Two children in one family have the same size and color                                                                |
+| **Required attributes** | blocking | A field the rules require for that product type (or for parents) is blank                                              |
+|                         | warning  | The product type isn't in the rule set, so its fields can't be checked                                                 |
+| **Duplicates**          | blocking | The same SKU on two rows                                                                                               |
+|                         | blocking | Two sellable rows share a barcode, ignoring spaces and leading zeros                                                   |
+|                         | warning  | One style number used by two families                                                                                  |
+|                         | warning  | Two families with the same brand, color, and title words once the size is removed                                      |
+| **Titles and bullets**  | warning  | A title over the length limit, or a promotional phrase in a title or bullet                                            |
+|                         | tidy-up  | All-caps words, a title that doesn't start with the brand, too few or too many bullets, a bullet over the length limit |
+| **Basics**              | blocking | No SKU, no main image, or a blank or zero price on a sellable row                                                      |
+|                         | warning  | A sale price above the list price                                                                                      |
 
 **The score** is the share of clean rows. A row counts fully against it when it has a blocking problem, 40% when its worst problem is a warning, and 10% when its worst is a tidy-up. Each row counts once, however many problems it has.
 
@@ -61,9 +61,9 @@ The built-in rules are an example modeled on common marketplace requirements, no
 
 70,000 rows (a 25 MB CSV), read, mapped, and checked, timed by the app itself in Chromium:
 
-| Machine | Median of 5 | Range |
-| --- | --- | --- |
-| Desktop, AMD Ryzen 7 5800X3D, 32 GB, Windows 11 | 0.88 s | 0.86 to 1.0 s |
+| Machine                                         | Median of 5 | Range         |
+| ----------------------------------------------- | ----------- | ------------- |
+| Desktop, AMD Ryzen 7 5800X3D, 32 GB, Windows 11 | 0.88 s      | 0.86 to 1.0 s |
 
 The browser test suite fails if this takes 3 seconds or more. `npm run bench` times the same work in Node.
 
@@ -76,13 +76,13 @@ npm install
 npm run dev
 ```
 
-| Command | What it does |
-| --- | --- |
-| `npm test` | Unit tests for every rule, the parsers, the export, and the sample's answer key |
-| `npm run test:e2e` | Browser tests, including accessibility scans at phone and desktop widths |
-| `npm run samples` | Regenerates the sample catalog and answer key |
-| `npm run samples -- --large 70000` | Writes a 70,000-row file to `samples/large/` for the timing test |
-| `npm run bench` | Times parsing and checking 70,000 rows in Node |
+| Command                            | What it does                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------- |
+| `npm test`                         | Unit tests for every rule, the parsers, the export, and the sample's answer key |
+| `npm run test:e2e`                 | Browser tests, including accessibility scans at phone and desktop widths        |
+| `npm run samples`                  | Regenerates the sample catalog and answer key                                   |
+| `npm run samples -- --large 70000` | Writes a 70,000-row file to `samples/large/` for the timing test                |
+| `npm run bench`                    | Times parsing and checking 70,000 rows in Node                                  |
 
 ## License
 
