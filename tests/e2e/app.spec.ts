@@ -167,6 +167,8 @@ const LARGE = root("samples/large/catalog-70k.csv");
 test("a 70,000-row file is read and checked in under 3 seconds @timing", async ({ page }) => {
   test.skip(!existsSync(LARGE), "Run `npm run samples -- --large 70000` first.");
   test.setTimeout(90_000);
+  // Chrome's CPU throttling doesn't reach the Web Worker that does this work, so it can't
+  // stand in for a slower machine here. The number reported is this machine's real time.
   await page.goto("/");
   await page.getByTestId("file-input").setInputFiles(LARGE);
   await expect(page.getByTestId("check-time")).toBeVisible({ timeout: 60_000 });
