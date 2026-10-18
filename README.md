@@ -61,9 +61,10 @@ The built-in rules are an example modeled on common marketplace requirements, no
 
 70,000 rows (a 25 MB CSV), read, mapped, and checked, timed by the app itself in Chromium:
 
-| Machine                                         | Median of 5 | Range         |
-| ----------------------------------------------- | ----------- | ------------- |
-| Desktop, AMD Ryzen 7 5800X3D, 32 GB, Windows 11 | 0.88 s      | 0.86 to 1.0 s |
+| Machine                                             | Time                 | Range         |
+| --------------------------------------------------- | -------------------- | ------------- |
+| Desktop, AMD Ryzen 7 5800X3D, 32 GB, Windows 11     | 0.88 s (median of 5) | 0.86 to 1.0 s |
+| GitHub Actions `ubuntu-latest` runner, first CI run | 0.55 s (one run)     | —             |
 
 The browser test suite fails if this takes 3 seconds or more. `npm run bench` times the same work in Node.
 
