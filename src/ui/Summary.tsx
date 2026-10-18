@@ -1,4 +1,4 @@
-import { SEVERITIES, type Report, type Severity } from "@relaywright/catalog-rules";
+import { SEVERITIES, type Report, type Severity } from "@samalbanese/catalog-rules";
 import { SEVERITY_HELP, SEVERITY_LABELS, SEVERITY_RANK, formatMs, plural } from "./labels";
 
 interface Props {

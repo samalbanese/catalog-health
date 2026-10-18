@@ -1,4 +1,4 @@
-import { FIELDS, type FieldKey } from "@relaywright/catalog-rules";
+import { FIELDS, type FieldKey } from "@samalbanese/catalog-rules";
 
 /**
  * Turns any spelling of a column header into one comparable key.

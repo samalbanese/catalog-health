@@ -1,4 +1,4 @@
-import { FIELDS, type Row } from "@relaywright/catalog-rules";
+import { FIELDS, type Row } from "@samalbanese/catalog-rules";
 import { normalizeHeader, type Mapping } from "./headers.ts";
 
 const CANONICAL = new Set<string>(FIELDS);

@@ -1,4 +1,4 @@
-import type { Issue } from "@relaywright/catalog-rules";
+import type { Issue } from "@samalbanese/catalog-rules";
 
 const HEADER = ["sku", "row", "severity", "field", "problem", "suggested_fix"];
 

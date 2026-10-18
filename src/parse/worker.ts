@@ -1,6 +1,6 @@
 // Runs in a Web Worker so a 70,000-row file never freezes the page.
 // The file stays in memory here; nothing is sent anywhere.
-import { runChecks } from "@relaywright/catalog-rules";
+import { runChecks } from "@samalbanese/catalog-rules";
 import { detectHeaderRow, detectMapping } from "./headers.ts";
 import type { FromWorker, ToWorker } from "./protocol.ts";
 import { toRows } from "./rows.ts";

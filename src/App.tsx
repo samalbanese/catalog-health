@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { exampleRules, type Issue, type RuleSet, type Severity } from "@relaywright/catalog-rules";
+import { exampleRules, type Issue, type RuleSet, type Severity } from "@samalbanese/catalog-rules";
 import { createChecker } from "./parse/client";
 import type { Mapping } from "./parse/headers";
 import { fixListCsv } from "./export";
@@ -143,7 +143,7 @@ export function App() {
         </a>
         <nav aria-label="Page">
           <a href="#how-it-checks">How it checks</a>
-          <a href="https://github.com/relaywright/catalog-health">Source ↗</a>
+          <a href="https://github.com/samalbanese/catalog-health">Source ↗</a>
         </nav>
       </header>
 
@@ -209,7 +209,7 @@ export function App() {
 
       <footer className="foot mono">
         <span>Your file is read in this tab and never uploaded.</span>
-        <span>MIT license · relaywright</span>
+        <span>MIT license · Sam Albanese</span>
       </footer>
     </>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FIELDS, type FieldKey } from "@relaywright/catalog-rules";
+import { FIELDS, type FieldKey } from "@samalbanese/catalog-rules";
 import type { Mapping } from "../parse/headers";
 import type { Loaded } from "./types";
 import { FIELD_LABELS } from "./labels";

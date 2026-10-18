@@ -1,4 +1,4 @@
-import type { Report, Row, RuleSet } from "@relaywright/catalog-rules";
+import type { Report, Row, RuleSet } from "@samalbanese/catalog-rules";
 import type { detectMapping, Mapping } from "./headers.ts";
 
 /** Messages the page sends to the parsing worker. */

@@ -1,13 +1,13 @@
 # Catalog Health Checker
 
-[![CI](https://github.com/relaywright/catalog-health/actions/workflows/ci.yml/badge.svg)](https://github.com/relaywright/catalog-health/actions/workflows/ci.yml)
+[![CI](https://github.com/samalbanese/catalog-health/actions/workflows/ci.yml/badge.svg)](https://github.com/samalbanese/catalog-health/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Find what's broken in a product catalog before a marketplace does.** Drop in a marketplace product file and every row is checked for broken variation families, missing attributes, duplicates, and title and bullet problems. You get a health score, the problems grouped by family, and a fix list you can hand to whoever owns the data.
 
 Your file is read in your browser tab and never uploaded.
 
-[Open the live app](https://catalog-health.relaywright.workers.dev/)
+[Open the live app](https://catalog.samalbanese.com/)
 
 ![The sample catalog loads and scores 86 out of 100 with 66 problems, a strip marks where they sit in the file, filters narrow the list to variation families, and one family opens to show a child that repeats another child's size and color](.github/demo.webp)
 

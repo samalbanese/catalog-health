@@ -1,5 +1,5 @@
 {
-  "name": "@relaywright/catalog-rules",
+  "name": "@samalbanese/catalog-rules",
   "description": "Deterministic marketplace catalog checks: variation families, required attributes, duplicates, content, and basics",
   "version": "0.1.0",
   "private": true,

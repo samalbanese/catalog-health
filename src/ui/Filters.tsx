@@ -1,4 +1,4 @@
-import { CHECKS, SEVERITIES, type CheckId, type Report, type Severity } from "@relaywright/catalog-rules";
+import { CHECKS, SEVERITIES, type CheckId, type Report, type Severity } from "@samalbanese/catalog-rules";
 import { CHECK_LABELS, SEVERITY_LABELS } from "./labels";
 
 export interface FilterState {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Issue } from "@relaywright/catalog-rules";
+import type { Issue } from "@samalbanese/catalog-rules";
 import Papa from "papaparse";
 import { fixListCsv } from "./export.ts";
 

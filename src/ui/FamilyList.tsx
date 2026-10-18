@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SEVERITIES, type Family, type Issue, type Row, type Severity } from "@relaywright/catalog-rules";
+import { SEVERITIES, type Family, type Issue, type Row, type Severity } from "@samalbanese/catalog-rules";
 import { CHECK_LABELS, SEVERITY_LABELS, SEVERITY_RANK, fieldLabel, plural } from "./labels";
 
 export interface FamilyGroup {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { FIELDS } from "@relaywright/catalog-rules";
+import { FIELDS } from "@samalbanese/catalog-rules";
 import { ALIASES, detectHeaderRow, detectMapping, normalizeHeader } from "./headers.ts";
 
 const MP = "[marketplace_id=ATVPDKIKX0DER]";

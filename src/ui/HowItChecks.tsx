@@ -7,7 +7,7 @@ import {
   validateRuleSet,
   type IssueCode,
   type RuleSet,
-} from "@relaywright/catalog-rules";
+} from "@samalbanese/catalog-rules";
 import { CHECK_LABELS, SEVERITY_LABELS } from "./labels";
 
 interface Props {

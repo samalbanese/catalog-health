@@ -1,4 +1,4 @@
-import type { RuleSet } from "@relaywright/catalog-rules";
+import type { RuleSet } from "@samalbanese/catalog-rules";
 import type { Mapping } from "./headers.ts";
 import type { FromWorker, ToWorker } from "./protocol.ts";
 

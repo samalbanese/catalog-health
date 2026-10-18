@@ -1,4 +1,4 @@
-import type { CheckId, FieldKey, Severity } from "@relaywright/catalog-rules";
+import type { CheckId, FieldKey, Severity } from "@samalbanese/catalog-rules";
 
 export const CHECK_LABELS: Record<CheckId, string> = {
   variations: "Variation families",
